@@ -1,36 +1,44 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MiembroService } from '../../Services/miembro.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registrar-miembro',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './registrar-miembro.component.html',
   styleUrl: './registrar-miembro.component.css'
 })
 export class RegistrarMiembroComponent {
   miembroForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+
+  constructor(private fb: FormBuilder, private miembroService: MiembroService, private router: Router) {
     this.miembroForm = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      correo: ['', [Validators.required, Validators.email]],
       telefono: ['', Validators.required],
       f_registro: [new Date().toISOString().split('T')[0]],
-      estado:[true],
+      estado: [true],
       es_profesor: [false]
     });
   }
 
   OnSubmit() {
     if (this.miembroForm.valid) {
-      console.log(this.miembroForm.value);
-      // Aquí puedes agregar la lógica para enviar los datos al servidor o realizar otras acciones
-    } else {
-      console.log('Formulario no válido');
+      this.miembroService.guardarMiembro(this.miembroForm.value).subscribe({ next: 
+        (dato) =>{
+          console.log('Miembro Guardado: ', dato);
+          this.miembroForm.reset();
+        },
+        error: (err) => console.error(err)
+      });
     }
   }
+
+  
   
 
 }

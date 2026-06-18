@@ -1,262 +1,35 @@
-<!-- registro-miembro.component.html -->
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-lg-8 col-xl-7">
-
-      <!-- ── Tarjeta principal ─────────────────────────────────────── -->
-      <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
-
-        <!-- Encabezado -->
-        <div class="card-header lib-header py-3 px-4">
-          <div class="d-flex align-items-center gap-3">
-            <div class="header-icon-wrap">
-              <i class="bi bi-person-plus-fill fs-4 text-white"></i>
-            </div>
-            <div>
-              <h5 class="mb-0 text-white fw-semibold">Registrar nuevo miembro</h5>
-              <small class="text-white-50">Complete los datos del miembro de la biblioteca</small>
-            </div>
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h3><i class="bi bi-person-plus"></i> Registro de Nuevo Miembro</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="miembroForm" (ngSubmit)="OnSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control" placeholder="Ej. Juan">
           </div>
-        </div>
-
-        <!-- Alerta de éxito -->
-        <div *ngIf="submitSuccess" class="alert alert-success d-flex align-items-center gap-2 m-3 mb-0 rounded-2" role="alert">
-          <i class="bi bi-check-circle-fill"></i>
-          <span>Miembro registrado correctamente. Redirigiendo…</span>
-        </div>
-
-        <!-- Alerta de error -->
-        <div *ngIf="submitError" class="alert alert-danger d-flex align-items-center gap-2 m-3 mb-0 rounded-2" role="alert">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>{{ submitError }}</span>
-        </div>
-
-        <!-- ── Formulario ─────────────────────────────────────────── -->
-        <form [formGroup]="miembroForm" (ngSubmit)="onSubmit()" novalidate>
-          <div class="card-body px-4 py-3">
-
-            <!-- SECCIÓN: Datos personales -->
-            <p class="section-label">
-              <i class="bi bi-person-vcard me-1"></i> Datos personales
-            </p>
-
-            <div class="row g-3 mb-3">
-              <!-- Nombre -->
-              <div class="col-md-6">
-                <label for="nombre" class="form-label">
-                  Nombre <span class="text-danger">*</span>
-                </label>
-                <div class="input-group"
-                     [class.is-invalid-group]="campoInvalido('nombre')"
-                     [class.is-valid-group]="campoValido('nombre')">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input
-                    id="nombre"
-                    type="text"
-                    class="form-control"
-                    placeholder="Ej. Juan"
-                    formControlName="nombre"
-                    [class.is-invalid]="campoInvalido('nombre')"
-                    [class.is-valid]="campoValido('nombre')"
-                    autocomplete="given-name"
-                  >
-                </div>
-                <div class="invalid-feedback d-block" *ngIf="campoInvalido('nombre')">
-                  {{ getMensajeError('nombre') }}
-                </div>
-              </div>
-
-              <!-- Apellido -->
-              <div class="col-md-6">
-                <label for="apellido" class="form-label">
-                  Apellido <span class="text-danger">*</span>
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input
-                    id="apellido"
-                    type="text"
-                    class="form-control"
-                    placeholder="Ej. Pérez"
-                    formControlName="apellido"
-                    [class.is-invalid]="campoInvalido('apellido')"
-                    [class.is-valid]="campoValido('apellido')"
-                    autocomplete="family-name"
-                  >
-                </div>
-                <div class="invalid-feedback d-block" *ngIf="campoInvalido('apellido')">
-                  {{ getMensajeError('apellido') }}
-                </div>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-1">
-              <!-- Correo -->
-              <div class="col-md-6">
-                <label for="correo" class="form-label">
-                  Correo electrónico <span class="text-danger">*</span>
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                  <input
-                    id="correo"
-                    type="email"
-                    class="form-control"
-                    placeholder="correo@ejemplo.com"
-                    formControlName="correo"
-                    [class.is-invalid]="campoInvalido('correo')"
-                    [class.is-valid]="campoValido('correo')"
-                    autocomplete="email"
-                  >
-                </div>
-                <div class="invalid-feedback d-block" *ngIf="campoInvalido('correo')">
-                  {{ getMensajeError('correo') }}
-                </div>
-              </div>
-
-              <!-- Teléfono -->
-              <div class="col-md-6">
-                <label for="telefono" class="form-label">Teléfono</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                  <input
-                    id="telefono"
-                    type="tel"
-                    class="form-control"
-                    placeholder="Ej. +503 7000-0000"
-                    formControlName="telefono"
-                    [class.is-invalid]="campoInvalido('telefono')"
-                    [class.is-valid]="campoValido('telefono')"
-                    autocomplete="tel"
-                  >
-                </div>
-                <div class="invalid-feedback d-block" *ngIf="campoInvalido('telefono')">
-                  {{ getMensajeError('telefono') }}
-                </div>
-              </div>
-            </div>
-
-            <!-- SECCIÓN: Registro -->
-            <p class="section-label mt-4">
-              <i class="bi bi-calendar-event me-1"></i> Fecha de registro
-            </p>
-
-            <div class="row g-3 mb-1">
-              <div class="col-md-6">
-                <label for="f_registro" class="form-label">
-                  Fecha de registro <span class="text-danger">*</span>
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-                  <input
-                    id="f_registro"
-                    type="date"
-                    class="form-control"
-                    formControlName="f_registro"
-                    [class.is-invalid]="campoInvalido('f_registro')"
-                  >
-                </div>
-                <div class="form-text text-muted mt-1">
-                  <i class="bi bi-clock me-1"></i>
-                  Se completa automáticamente con la fecha actual.
-                </div>
-              </div>
-            </div>
-
-            <!-- SECCIÓN: Configuración -->
-            <p class="section-label mt-4">
-              <i class="bi bi-toggles me-1"></i> Configuración del miembro
-            </p>
-
-            <div class="row g-3">
-              <!-- Toggle Estado -->
-              <div class="col-md-6">
-                <div class="toggle-card" [class.toggle-card--active]="estado.value">
-                  <div class="toggle-info">
-                    <div class="toggle-title">
-                      <i class="bi bi-circle-fill me-2"
-                         [class.text-success]="estado.value"
-                         [class.text-secondary]="!estado.value"
-                         style="font-size: 10px; vertical-align: 2px;">
-                      </i>
-                      Estado
-                    </div>
-                    <small class="text-muted">Indica si el miembro está activo</small>
-                  </div>
-                  <div class="form-check form-switch ms-3 mb-0">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      id="estado"
-                      formControlName="estado"
-                    >
-                  </div>
-                </div>
-                <small class="form-text ms-1">
-                  <span *ngIf="estado.value"  class="text-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
-                  <span *ngIf="!estado.value" class="text-danger"> <i class="bi bi-x-circle me-1"></i>Inactivo</span>
-                </small>
-              </div>
-
-              <!-- Toggle Es Profesor -->
-              <div class="col-md-6">
-                <div class="toggle-card" [class.toggle-card--active]="es_profesor.value">
-                  <div class="toggle-info">
-                    <div class="toggle-title">
-                      <i class="bi bi-mortarboard-fill me-2 text-muted" style="font-size: 14px;"></i>
-                      Es profesor
-                    </div>
-                    <small class="text-muted">Pertenece al cuerpo docente</small>
-                  </div>
-                  <div class="form-check form-switch ms-3 mb-0">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      id="es_profesor"
-                      formControlName="es_profesor"
-                    >
-                  </div>
-                </div>
-                <small class="form-text ms-1">
-                  <span *ngIf="es_profesor.value"  class="text-primary"><i class="bi bi-check-circle me-1"></i>Sí, es profesor</span>
-                  <span *ngIf="!es_profesor.value" class="text-muted">  <i class="bi bi-dash-circle me-1"></i>No es profesor</span>
-                </small>
-              </div>
-            </div>
-
-          </div><!-- /card-body -->
-
-          <!-- ── Footer con acciones ────────────────────────────────── -->
-          <div class="card-footer lib-footer px-4 py-3 d-flex align-items-center justify-content-between">
-            <small class="text-muted">
-              <span class="text-danger">*</span> Campos obligatorios
-            </small>
-            <div class="d-flex gap-2">
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                (click)="onCancelar()"
-                [disabled]="isLoading"
-              >
-                <i class="bi bi-x-lg me-1"></i>Cancelar
-              </button>
-              <button
-                type="submit"
-                class="btn btn-lib"
-                [disabled]="isLoading"
-              >
-                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                <i *ngIf="!isLoading" class="bi bi-floppy2-fill me-1"></i>
-                {{ isLoading ? 'Guardando…' : 'Guardar miembro' }}
-              </button>
-            </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Apellido</label>
+            <input type="text" formControlName="apellido" class="form-control" placeholder="Ej. Pérez">
           </div>
 
-        </form>
-      </div><!-- /card -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Correo Electrónico</label>
+            <input type="email" formControlName="correo" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" formControlName="telefono" class="form-control">
+          </div>
 
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="!miembroForm.valid">
+          Guardar Miembro
+        </button>
+      </form>
     </div>
   </div>
 </div>
