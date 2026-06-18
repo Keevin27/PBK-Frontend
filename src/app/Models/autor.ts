@@ -1,5 +1,5 @@
 export class Autor {
     id_autor?: number;
     nombre: string;
-    nacionalidad: string;
+    nacionalidad?: string;
 }

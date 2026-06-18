@@ -1,1 +1,72 @@
-<p>lista-recursos works!</p>
+<div class="container-fluid px-4 py-5 bg-white text-dark">
+  
+  <div class="text-center mb-5">
+    <h1 class="display-6 fw-bold tracking-tight text-uppercase text-secondary" style="letter-spacing: 2px;">
+      Catálogo de Libros y Recursos
+    </h1>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center border-top border-bottom py-3 mb-4 text-muted small">
+    <div class="d-flex gap-4 align-items-center">
+      <div>
+        <span class="me-2 text-uppercase fw-semibold">Filtrar por:</span>
+        <select class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
+          <option>Todos los productos</option>
+        </select>
+      </div>
+      <div>
+        <span class="me-2 text-uppercase fw-semibold">Ordenar por:</span>
+        <select class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
+          <option>Características</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <span class="fw-bold text-dark">{{ listaRecursos.length }}</span> artículos disponibles
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+    
+    <div class="col" *ngFor="let item of listaRecursos">
+      <div class="card h-100 border-0 text-center product-card position-relative">
+        
+        <div class="image-container overflow-hidden bg-light mb-3 rounded" style="height: 280px; display: flex; align-items: center; justify-content: center;">
+          <img 
+            *ngIf="item.logo" 
+            [src]="'data:image/jpeg;base64,' + item.logo" 
+            class="img-fluid download-img" 
+            alt="Portada de {{ item.titulo }}"
+            style="max-height: 100%; object-fit: contain;"
+          />
+          <div *ngIf="!item.logo" class="text-muted">
+            <i class="bi bi-book fs-1"></i>
+          </div>
+        </div>
+
+        <div class="card-body p-0 d-flex flex-column text-start px-2">
+          <h6 class="fw-bold text-dark text-uppercase mb-1 text-truncate" [title]="item.titulo">
+            {{ item.titulo }}
+          </h6>
+          
+          <span class="text-muted text-uppercase fw-semibold mb-2" style="font-size: 0.75rem;">
+            {{ item.autor?.nombre || 'Autor Desconocido' }}
+          </span>
+          
+          <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
+            <span class="fw-bold text-dark"></span>
+            
+            <button 
+              class="btn btn-sm btn-outline-dark rounded-circle" 
+              (click)="agregarAlCarrito(item)"
+              title="Agregar al carrito">
+              <i class="bi bi-bag-plus"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

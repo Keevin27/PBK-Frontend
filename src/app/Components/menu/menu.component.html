@@ -1,1 +1,58 @@
-<h1>Hola, Mundo!</h1>
+<div class="d-flex flex-column min-vh-100">
+
+  <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="width:260px;">
+    <div class="offcanvas-header border-bottom border-secondary">
+      <span class="fs-5 fw-bold" id="sidebarMenuLabel">P<span class="text-warning">BK</span></span>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-3">
+      <div class="small text-secondary text-uppercase mb-2" style="font-size:.7rem;">Biblioteca PBK</div>
+      
+      <div class="nav nav-pills flex-column gap-1" id="sidebar-nav">
+        <a class="nav-link text-white text-start" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" data-bs-dismiss="offcanvas">
+          <i class="bi bi-house-door me-2"></i> Inicio
+        </a>
+        <a class="nav-link text-white text-start" routerLink="/lista-recursos" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-journal-bookmark me-2"></i> Lista de Recursos
+        </a>
+      </div>
+      
+      <div class="mt-auto small text-secondary pt-3" style="font-size:.7rem;">PBK v1.0<br>Sistema interno de biblioteca</div>
+    </div>
+  </div>
+
+  <div class="flex-grow-1 d-flex flex-column">
+
+    <header class="navbar navbar-expand bg-white border-bottom px-3 px-md-4 py-3">
+      <button class="btn btn-outline-dark me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" title="Abrir menú">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <div>
+        <div class="text-uppercase text-muted small fw-semibold" style="font-size:.7rem;">Panel</div>
+        <div class="fs-5 fw-semibold">Sistema Bibliotecario</div>
+      </div>
+      
+      <div class="ms-auto d-flex align-items-center gap-3 flex-wrap">
+        <div class="d-flex align-items-center gap-2 border rounded-pill px-3 py-1">
+          <span class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold" style="width:28px;height:28px;font-size:.75rem;">AM</span>
+          <div class="small">
+            <div class="fw-semibold">Ana Martínez</div>
+            <div class="text-muted" style="font-size:.7rem;">Bibliotecaria</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 border rounded-pill px-3 py-1">
+          <i class="bi bi-calendar3 text-warning"></i>
+          <div class="small">
+            <div class="fw-semibold">{{ fechaHoy }}</div>
+            <div class="text-muted" style="font-size:.7rem;">{{ horaHoy }}</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="p-4 flex-grow-1 bg-light">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>
