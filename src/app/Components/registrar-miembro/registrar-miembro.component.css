@@ -1,0 +1,110 @@
+/* ── Encabezado ──────────────────────────────────────────── */
+.lib-header {
+  background: #1a3a5c;
+}
+
+.header-icon-wrap {
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Separador de sección ────────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #6c757d;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 6px;
+  margin-bottom: 0;
+}
+
+/* ── Input groups ────────────────────────────────────────── */
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+  color: #6c757d;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+  border-left: none;
+}
+
+.input-group .form-control:focus {
+  border-color: #1a3a5c;
+  box-shadow: 0 0 0 0.2rem rgba(26, 58, 92, 0.15);
+}
+
+.input-group .form-control:focus ~ .input-group-text,
+.input-group-text + .form-control:focus {
+  border-color: #1a3a5c;
+}
+
+/* ── Tarjetas de toggle ───────────────────────────────────── */
+.toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 12px 14px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  cursor: default;
+}
+
+.toggle-card--active {
+  border-color: #1a3a5c;
+  background-color: #eef3f8;
+}
+
+.toggle-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+}
+
+/* ── Switch personalizado ────────────────────────────────── */
+.form-check-input[type="checkbox"]:checked {
+  background-color: #1a3a5c;
+  border-color: #1a3a5c;
+}
+
+.form-check-input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 0.2rem rgba(26, 58, 92, 0.2);
+}
+
+/* ── Botón principal ─────────────────────────────────────── */
+.btn-lib {
+  background-color: #1a3a5c;
+  color: #fff;
+  border: none;
+}
+
+.btn-lib:hover:not(:disabled) {
+  background-color: #122b44;
+  color: #fff;
+}
+
+.btn-lib:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.lib-footer {
+  background-color: #f8f9fa;
+}
+
+/* ── Feedback de validación ──────────────────────────────── */
+.invalid-feedback {
+  font-size: 12px;
+}
