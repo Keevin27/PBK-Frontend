@@ -1,0 +1,21 @@
+.toast-container {
+  /* Margen superior para que no choque exactamente con el borde del navegador */
+  margin-top: 15px; 
+}
+
+.toast {
+  /* Animación de entrada suave */
+  animation: slideIn 0.25s ease-out forwards;
+  min-width: 280px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

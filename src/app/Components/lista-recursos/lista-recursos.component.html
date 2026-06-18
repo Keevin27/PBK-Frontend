@@ -1,72 +1,218 @@
 <div class="container-fluid px-4 py-5 bg-white text-dark">
-  
-  <div class="text-center mb-5">
-    <h1 class="display-6 fw-bold tracking-tight text-uppercase text-secondary" style="letter-spacing: 2px;">
-      Catálogo de Libros y Recursos
-    </h1>
-  </div>
 
-  <div class="d-flex flex-wrap justify-content-between align-items-center border-top border-bottom py-3 mb-4 text-muted small">
-    <div class="d-flex gap-4 align-items-center">
-      <div>
-        <span class="me-2 text-uppercase fw-semibold">Filtrar por:</span>
-        <select class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
-          <option>Todos los productos</option>
-        </select>
-      </div>
-      <div>
-        <span class="me-2 text-uppercase fw-semibold">Ordenar por:</span>
-        <select class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
-          <option>Características</option>
-        </select>
-      </div>
+    <div class="text-center mb-5">
+        <h1 class="display-6 fw-bold tracking-tight text-uppercase text-secondary" style="letter-spacing: 2px;">
+            Catálogo de Libros y Recursos
+        </h1>
     </div>
-    <div>
-      <span class="fw-bold text-dark">{{ listaRecursos.length }}</span> artículos disponibles
-    </div>
-  </div>
 
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
-    
-    <div class="col" *ngFor="let item of listaRecursos">
-      <div class="card h-100 border-0 text-center product-card position-relative">
+    <div class="d-flex flex-wrap justify-content-between align-items-center border-top border-bottom py-3 mb-4 text-muted small gap-3">
         
-        <div class="image-container overflow-hidden bg-light mb-3 rounded" style="height: 280px; display: flex; align-items: center; justify-content: center;">
-          <img 
-            *ngIf="item.logo" 
-            [src]="'data:image/jpeg;base64,' + item.logo" 
-            class="img-fluid download-img" 
-            alt="Portada de {{ item.titulo }}"
-            style="max-height: 100%; object-fit: contain;"
-          />
-          <div *ngIf="!item.logo" class="text-muted">
-            <i class="bi bi-book fs-1"></i>
-          </div>
+        <div class="d-flex gap-4 align-items-center flex-wrap">
+            <div class="position-relative" style="min-width: 280px;">
+                <span class="position-absolute top-50 start-0 translate-middle-y ps-2 text-muted">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input 
+                    type="text" 
+                    class="form-control form-control-sm ps-4 border-secondary-subtle bg-light shadow-sm" 
+                    placeholder="Buscar por título, autor o descripción..."
+                    [(ngModel)]="terminoBusqueda">
+            </div>
+
+            <div>
+                <span class="me-2 text-uppercase fw-semibold">Filtrar por:</span>
+                <select class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
+                    <option>Todos los productos</option>
+                </select>
+            </div>
+            <div>
+                <span class="me-2 text-uppercase fw-semibold">Ordenar por:</span>
+                <select class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
+                    <option>Características</option>
+                </select>
+            </div>
         </div>
 
-        <div class="card-body p-0 d-flex flex-column text-start px-2">
-          <h6 class="fw-bold text-dark text-uppercase mb-1 text-truncate" [title]="item.titulo">
-            {{ item.titulo }}
-          </h6>
-          
-          <span class="text-muted text-uppercase fw-semibold mb-2" style="font-size: 0.75rem;">
-            {{ item.autor?.nombre || 'Autor Desconocido' }}
-          </span>
-          
-          <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
-            <span class="fw-bold text-dark"></span>
-            
-            <button 
-              class="btn btn-sm btn-outline-dark rounded-circle" 
-              (click)="agregarAlCarrito(item)"
-              title="Agregar al carrito">
-              <i class="bi bi-bag-plus"></i>
-            </button>
-          </div>
+        <div class="d-flex align-items-center gap-4">
+            <div>
+                <span class="fw-bold text-dark">{{ recursosFiltrados.length }}</span> de {{ listaRecursos.length }} artículos disponibles
+            </div>
+
+            <div class="position-relative" style="cursor: pointer;" data-bs-toggle="modal"
+                data-bs-target="#modalPrestamo" (click)="prepararPrestamo()" title="Ver carrito de préstamos">
+                <i class="bi bi-cart3 fs-4 text-dark"></i>
+                <span *ngIf="carritoPrestamo.length > 0"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style="font-size: 0.65rem;">
+                    {{ carritoPrestamo.length }}
+                </span>
+            </div>
         </div>
 
-      </div>
     </div>
 
-  </div>
+    <div *ngIf="recursosFiltrados.length === 0" class="text-center py-5 text-muted">
+        <i class="bi bi-search-heart fs-1 d-block mb-2"></i>
+        <p>No se encontraron recursos que coincidan con "{{ terminoBusqueda }}"</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4" *ngIf="recursosFiltrados.length > 0">
+        <div class="col" *ngFor="let item of recursosFiltrados">
+            <div class="card h-100 border-0 text-center product-card position-relative">
+
+                <div class="image-container overflow-hidden bg-light mb-3 rounded"
+                    style="height: 280px; display: flex; align-items: center; justify-content: center;">
+                    <img *ngIf="item.logo" [src]="'data:image/jpeg;base64,' + item.logo" class="img-fluid download-img"
+                        alt="Portada de {{ item.titulo }}" style="max-height: 100%; object-fit: contain;" />
+                    <div *ngIf="!item.logo" class="text-muted">
+                        <i class="bi bi-book fs-1"></i>
+                    </div>
+                </div>
+
+                <div class="card-body p-0 d-flex flex-column text-start px-2">
+                    <h6 class="fw-bold text-dark text-uppercase mb-1 text-truncate" [title]="item.titulo">
+                        {{ item.titulo }}
+                    </h6>
+
+                    <span class="text-muted text-uppercase fw-semibold mb-2" style="font-size: 0.75rem;">
+                        {{ item.autor?.nombre || 'Autor Desconocido' }}
+                    </span>
+
+                    <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
+                        <span class="fw-bold text-dark"></span>
+
+                        <button class="btn btn-sm btn-outline-dark rounded-circle" (click)="agregarAlCarrito(item)"
+                            title="Agregar al carrito">
+                            <i class="bi bi-bag-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="modalPrestamoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title text-uppercase fw-bold" id="modalPrestamoLabel" style="font-size: 1rem; letter-spacing: 1px;">
+                    <i class="bi bi-journal-check me-2 text-warning"></i>Detalle del Nuevo Préstamo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body p-4 bg-light">
+                <form (ngSubmit)="confirmarPrestamo()" #prestamoForm="ngForm">
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label text-uppercase fw-bold text-muted small">Número de Carnet del Miembro *</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-card-text text-secondary"></i></span>
+                                <input type="text" class="form-control border-start-0"
+                                    placeholder="Ej: AB12345" [(ngModel)]="carnetMiembro"
+                                    name="carnetMiembro" required #carnet="ngModel"
+                                    [class.is-invalid]="carnet.invalid && carnet.touched">
+                            </div>
+                            <div class="invalid-feedback" *ngIf="carnet.invalid && carnet.touched">El número de carnet es obligatorio.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-uppercase fw-bold text-muted small">Fecha de Préstamo (Hoy)</label>
+                            <input type="text" class="form-control bg-white" [value]="fechaInicioFormateada" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-uppercase fw-bold text-muted small">Fecha Máxima de Entrega</label>
+                            <input type="text" class="form-control bg-white fw-bold text-danger" [value]="fechaEntregaFormateada" readonly>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="alert alert-warning border-0 d-flex align-items-center mb-0 py-2 px-3" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                                <div class="small">
+                                    <strong>Política de Mora:</strong> Se aplicará una penalización estricta de
+                                    <span class="badge bg-dark">${{ tarifaMoraPorDia.toFixed(2) }}</span> por cada día de retraso.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-uppercase fw-bold text-secondary border-bottom pb-2 mb-3" style="font-size: 0.8rem;">
+                        Recursos Seleccionados ({{ carritoPrestamo.length }}/5)
+                    </h6>
+
+                    <div *ngIf="carritoPrestamo.length === 0" class="text-center py-4 text-muted">
+                        <i class="bi bi-cart-x fs-2 d-block mb-2"></i>
+                        No has seleccionado ningún recurso aún.
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mb-3" style="max-height: 280px; overflow-y: auto;" *ngIf="carritoPrestamo.length > 0">
+                        <div *ngFor="let item of carritoPrestamo; let i = index"
+                            class="p-3 bg-white rounded border shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            
+                            <div class="d-flex align-items-center gap-3 flex-grow-1" style="min-width: 200px;">
+                                <i class="bi bi-book-half text-secondary fs-4"></i>
+                                <div class="text-truncate" style="max-width: 250px;">
+                                    <div class="fw-bold text-dark small text-uppercase text-truncate" [title]="item.ejemplar.recurso.titulo">
+                                        {{ item.ejemplar.recurso.titulo }}
+                                    </div>
+                                    <small class="text-muted text-uppercase d-block text-truncate" style="font-size: 0.7rem;">
+                                        {{ item.ejemplar.recurso.autor?.nombre || 'Autor desconocido' }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 220px;">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light text-muted fw-bold" style="font-size: 0.7rem;">CÓD. EJEMPLAR</span>
+                                    <input 
+                                        type="text" 
+                                        class="form-control form-control-sm text-uppercase fw-bold border-secondary-subtle" 
+                                        placeholder="Ej: NE-001"
+                                        [(ngModel)]="item.codigoEjemplarAsignado" 
+                                        [name]="'codigoEjemplar_' + i"
+                                        required
+                                        #codigoEjemplar="ngModel"
+                                        [class.is-invalid]="codigoEjemplar.invalid && codigoEjemplar.touched">
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-sm btn-outline-danger border-0 px-2 py-1"
+                                (click)="quitarDelCarrito(item.ejemplar.recurso)" title="Quitar">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0 border-top mt-4">
+                        <button type="button" class="btn btn-sm btn-secondary text-uppercase fw-bold px-3" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-sm btn-dark text-uppercase fw-bold px-4"
+                            [disabled]="prestamoForm.invalid || carritoPrestamo.length === 0 || tieneCodigosVacios()" data-bs-dismiss="modal">
+                            Confirmar Préstamo
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    <div *ngFor="let msg of mensajesToast" class="toast show align-items-center text-white border-0 mb-2 shadow"
+        [ngClass]="msg.tipo === 'error' ? 'bg-danger' : 'bg-success'" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="bi" [ngClass]="msg.tipo === 'error' ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill'"></i>
+                <span>{{ msg.texto }}</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="removerToast(msg)" aria-label="Cerrar"></button>
+        </div>
+    </div>
 </div>
