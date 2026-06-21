@@ -5,9 +5,46 @@
       <h4 class="mb-0 fw-bold">
         <i class="bi bi-people-fill text-warning me-2"></i> Gestión de Miembros
       </h4>
-      <button class="btn btn-warning shadow-sm fw-bold px-3" (click)="irARegistrarMiembro()">
-        <i class="bi bi-person-plus-fill me-1"></i> Nuevo Miembro
-      </button>
+      
+    </div>
+
+    <div class="px-4 pt-4 bg-light-subtle">
+      <div class="row g-2">
+        <div class="col-md-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-secondary">
+              <i class="bi bi-funnel"></i>
+            </span>
+            <select class="form-select border-start-0 ps-0 shadow-none" 
+                    [(ngModel)]="criterioBusqueda" 
+                    (change)="filtrarMiembros()">
+              <option value="todos">Buscar en todos</option>
+              <option value="id_miembro">ID</option>
+              <option value="nombre">Nombre</option>
+              <option value="apellido">Apellido</option>
+              <option value="correo">Correo</option>
+              <option value="telefono">Teléfono</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-secondary">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control border-start-0 ps-0 shadow-none" 
+                   placeholder="Escribe para buscar..." 
+                   [(ngModel)]="terminoBusqueda" 
+                   (input)="filtrarMiembros()">
+            <button class="btn btn-outline-secondary border-start-0 bg-white" 
+                    type="button" 
+                    *ngIf="terminoBusqueda" 
+                    (click)="terminoBusqueda=''; filtrarMiembros()">
+              <i class="bi bi-x-circle-fill text-muted"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="card-body bg-light-subtle p-4">
@@ -21,42 +58,62 @@
               <th scope="col">Correo Electrónico</th>
               <th scope="col">Teléfono</th>
               <th scope="col">Fecha Registro</th>
-              <th scope="col">Tipo</th>
+              <th scope="col">Rol</th>
               <th scope="col">Estado</th>
               <th scope="col" class="text-center pe-3">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor=" let miembro of miembros; let i=index">
-              <th scope="row" class="ps-3 text-secondary">#{{ miembro.id_miembro }}</th>
+            <tr *ngFor=" let item of miembros; let i=index">
+              <th scope="row" class="ps-3 text-secondary">#{{ item.miembro.id_miembro }}</th>
               <td class="fw-bold text-dark">
-                {{ miembro.nombre }}
+                {{ item.miembro.nombre }}
               </td>
-              <td>{{ miembro.apellido }}</td> 
-              <td>{{ miembro.correo }}</td>
-              <td>{{ miembro.telefono }}</td>
-              <td>{{ miembro.f_registro | date:'dd/MM/yyyy' }}</td>
+              <td>{{ item.miembro.apellido }}</td> 
+              <td>{{ item.miembro.correo }}</td>
+              <td>{{ item.miembro.telefono }}</td>
+              <td>{{ item.miembro.f_registro | date:'dd/MM/yyyy' }}</td>
               
               <td>
-                <span class="badge" [ngClass]="miembro.es_profesor ? 'bg-warning text-dark' : 'bg-secondary text-white'">
-                  {{ miembro.es_profesor ? 'Profesor' : 'Miembro' }}
+                <span class="badge text-uppercase p-2 bg-secondary text-white" >
+                  {{ item.nombreRol }}
                 </span>
               </td>
 
               <td>
-                <span class="badge" [ngClass]="miembro.estado ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger'">
-                  {{ miembro.estado ? 'Activo' : 'Inactivo' }}
-                </span>
+                <div class="form-check form-switch d-flex justify-content-start align-items-center mb-0">
+                  <input class="form-check-input me-2 mt-0" type="checkbox" role="switch" 
+                         style="cursor: pointer;"
+                         [checked]="item.miembro.estado" 
+                         (change)="cambiarEstado(item.miembro)" 
+                         title="Cambiar acceso del usuario">
+                  <span class="badge" [ngClass]="item.miembro.estado ? 'bg-success-subtle text-success border border-success' : 'bg-danger-subtle text-danger border border-danger'">
+                    {{ item.miembro.estado ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </div>
               </td>
 
               <td class="text-center pe-3">
                 <div class="btn-group btn-group-sm" role="group">
-                  <button type="button" class="btn btn-outline-primary" title="Editar Miembro">
-                    <i class="bi bi-pencil-square"></i>
+                  
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Cambiar Rol">
+                      <i class="bi bi-shield-lock-fill"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                      <li><h6 class="dropdown-header text-uppercase">Asignar Rol</h6></li>
+                      <li *ngFor="let rol of roles">
+                        <a class="dropdown-item" style="cursor: pointer;" (click)="cambiarRol(item.miembro.id_miembro, rol.nombre)">
+                          <i class="bi bi-person-badge me-2 text-secondary"></i> {{ rol.nombre }}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <button type="button" class="btn btn-outline-success" title="Renovar Carnet" (click)="renovarCarnet(item.miembro.id_miembro)">
+                    <i class="bi bi-card-heading"></i>
                   </button>
-                  <button type="button" class="btn btn-outline-danger" title="Dar de baja / Eliminar">
-                    <i class="bi bi-trash3"></i>
-                  </button>
+                  
                 </div>
               </td>
             </tr>

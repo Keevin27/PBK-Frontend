@@ -21,4 +21,21 @@ export class MiembroService {
   guardarMiembro(miembro: Miembro): Observable<Object> {
     return this.httpClient.post(`${this.BaseURL}`, miembro);
   }
+
+  obtenerRoles() {
+    return this.httpClient.get<any[]>(`${this.BaseURL}/roles`);
+  }
+
+  cambiarEstado(id: number) {
+    return this.httpClient.put<Miembro>(`${this.BaseURL}/${id}/estado`, {});
+  }
+
+  renovarCarnet(id: number) {
+    return this.httpClient.put<{mensaje: string}>(`${this.BaseURL}/${id}/renovar-carnet`, {});
+  }
+
+  cambiarRol(id: number, nombreRol: string) {
+    return this.httpClient.put<{mensaje: string}>(`${this.BaseURL}/${id}/cambiar-rol`, { nombreRol: nombreRol });
+  }
+
 }
