@@ -1,0 +1,237 @@
+<div class="container mt-4">
+    <div class="card shadow border-0 text-white" style="background-color: #1a1d24;">
+
+        <div class="card-header border-bottom border-secondary bg-transparent d-flex justify-content-between align-items-center py-3">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-journal-check text-warning me-2"></i> Préstamos Realizados
+            </h4>
+
+            <div class="position-relative" style="min-width: 280px;">
+                <span class="position-absolute top-50 start-0 translate-middle-y ps-2 text-muted">
+                    <i class="bi bi-search small"></i>
+                </span>
+                <input type="text"
+                    class="form-control form-control-sm ps-4 border-secondary bg-light text-dark shadow-sm"
+                    placeholder="Buscar por número de carnet..." [(ngModel)]="terminoBusqueda">
+            </div>
+        </div>
+
+        <div class="card-body bg-light-subtle p-4">
+
+            <div *ngIf="prestamosFiltrados.length === 0"
+                class="text-center py-5 text-muted bg-white rounded shadow-sm border">
+                <i class="bi bi-folder-x fs-1 d-block mb-2 text-secondary"></i>
+                <p class="mb-0 fw-medium">No se encontraron registros de préstamos disponibles.</p>
+            </div>
+
+            <div class="table-responsive" *ngIf="prestamosFiltrados.length > 0">
+                <table class="table table-hover align-middle bg-white rounded shadow-sm mb-0">
+                    <thead class="table-dark text-uppercase fs-7">
+                        <tr>
+                            <th scope="col" class="ps-3" style="width: 80px;">ID</th>
+                            <th scope="col" class="text-center">Miembro</th>
+                            <th scope="col" class="text-center">Salida</th>
+                            <th scope="col" class="text-center">Entrega</th>
+                            <th scope="col" class="text-center">Devolucion</th>
+                            <th scope="col" class="text-center">Recursos</th>
+                            <th scope="col" class="text-center">Estado</th>
+                            <th scope="col" class="text-center pe-3" style="width: 140px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of prestamosFiltrados">
+                            <th scope="row" class="ps-3 text-secondary">#{{ p.id_prestamo }}</th>
+
+                            <td class="text-uppercase">
+                                {{ p.carnet?.miembro?.nombre ? (p.carnet.miembro.nombre + " " +
+                                p.carnet.miembro.apellido) : '-' }}
+                            </td>
+
+                            <td class="text-center">{{ p.f_inicio | date:'dd/MM/yyyy' }}</td>
+                            <td class="text-center">{{ p.f_dev_esperada | date:'dd/MM/yyyy' }}</td>
+                            <td class="text-center">
+                                <span *ngIf="p.f_dev_real">{{ p.f_dev_real |
+                                    date:'dd/MM/yyyy' }}</span>
+                                <span *ngIf="!p.f_dev_real">—</span>
+                            </td>
+
+                            <td class="text-center">
+                                <button type="button"
+                                    class="btn btn-sm btn-outline-secondary text-uppercase fw-bold shadow-sm py-1"
+                                    style="font-size: 0.65rem; letter-spacing: 0.5px;" data-bs-toggle="modal"
+                                    data-bs-target="#modalDetalleRecursos" (click)="verDetallesDelPrestamo(p)">
+                                    <i class="bi bi-eye me-1"></i> Ver
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <span *ngIf="p.f_dev_real && !esPrestamoVencidoAlEntregar(p)"
+                                    class="badge bg-success-subtle text-success border border-success text-uppercase px-2.5 py-1.5">
+                                    Devuelto
+                                </span>
+
+                                <div *ngIf="p.f_dev_real && esPrestamoVencidoAlEntregar(p)"
+                                    class="d-flex flex-column align-items-center gap-1">
+                                    <span
+                                        class="badge bg-warning-subtle text-warning border border-warning text-uppercase px-2.5 py-1.5">
+                                        Devuelto con Mora
+                                    </span>
+                                    <button type="button"
+                                        class="btn btn-link p-0 text-decoration-underline text-secondary fw-bold"
+                                        style="font-size: 0.65rem;" data-bs-toggle="modal"
+                                        data-bs-target="#modalDesgloseMora" (click)="verDesgloseMora(p)">
+                                        Ver recibo
+                                    </button>
+                                </div>
+
+                                <span *ngIf="!p.f_dev_real && !esPrestamoVencido(p.f_dev_esperada)"
+                                    class="badge bg-primary-subtle text-primary border border-primary text-uppercase px-2.5 py-1.5">
+                                    Pendiente
+                                </span>
+
+                                <span *ngIf="!p.f_dev_real && esPrestamoVencido(p.f_dev_esperada)"
+                                    class="badge bg-danger-subtle text-danger border border-danger text-uppercase px-2.5 py-1.5">
+                                    Con Mora
+                                </span>
+                            </td>
+
+                            <td class="text-center pe-3">
+                                <button *ngIf="!p.f_dev_real"
+                                    class="btn btn-sm btn-primary fw-bold shadow-sm text-white px-3 py-1"
+                                    style="font-size: 0.7rem; letter-spacing: 0.5px;" (click)="marcarComoEntregado(p)">
+                                    <i class="bi bi-check2-circle me-1"></i> Entregar
+                                </button>
+                                <span *ngIf="p.f_dev_real" class="text-muted small text-uppercase fw-semibold">
+                                    <i class="bi bi-cloud-check-fill text-success fs-5"></i>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetalleRecursos" tabindex="-1" aria-labelledby="modalDetalleRecursosLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title text-uppercase fw-bold" id="modalDetalleRecursosLabel"
+                    style="font-size: 0.9rem; letter-spacing: 1px;">
+                    <i class="bi bi-collection text-warning me-2"></i> Ejemplares del Préstamo #{{
+                    prestamoSeleccionado?.id_prestamo }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div *ngIf="cargandoDetalles" class="text-center py-4">
+                    <div class="spinner-border text-dark spinner-border-sm" role="status"></div>
+                    <span class="ms-2 small text-uppercase text-muted fw-semibold">Consultando servidor...</span>
+                </div>
+                <div class="d-flex flex-column gap-3"
+                    *ngIf="!cargandoDetalles && detallesPrestamoSeleccionado.length > 0">
+                    <div *ngFor="let d of detallesPrestamoSeleccionado"
+                        class="p-3 bg-white rounded border shadow-sm d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3 text-truncate" style="max-width: 80%;">
+                            <i class="bi bi-bookmark-fill text-secondary fs-4"></i>
+                            <div class="text-truncate">
+                                <span class="fw-bold text-dark small text-uppercase text-truncate d-block">
+                                    {{ d.ejemplar?.recurso?.titulo }}
+                                </span>
+                                <small class="text-muted text-uppercase d-block text-truncate"
+                                    style="font-size: 0.7rem;">
+                                    Autor: {{ d.ejemplar?.recurso?.autor?.nombre || 'Desconocido' }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-dark text-white fw-mono px-2 py-1.5" style="font-size: 0.75rem;">
+                                {{ d.ejemplar?.id_ejemplar }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!cargandoDetalles && detallesPrestamoSeleccionado.length === 0"
+                    class="text-center py-3 text-muted small">
+                    <i class="bi bi-exclamation-circle d-block mb-1 fs-4"></i> No se encontraron ejemplares asociados a
+                    este préstamo.
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top-0 pt-0">
+                <button type="button" class="btn btn-sm btn-secondary text-uppercase fw-bold px-3"
+                    data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    <div *ngFor="let msg of mensajesToast" class="toast show align-items-center text-white border-0 mb-2 shadow"
+        [ngClass]="msg.tipo === 'error' ? 'bg-danger' : 'bg-success'" role="alert">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="bi"
+                    [ngClass]="msg.tipo === 'error' ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill'"></i>
+                <span>{{ msg.texto }}</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="removerToast(msg)"></button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDesgloseMora" tabindex="-1" aria-labelledby="modalDesgloseMoraLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title text-uppercase fw-bold" id="modalDesgloseMoraLabel"
+                    style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                    <i class="bi bi-receipt-cutoff me-2"></i> Detalle de Penalización
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div class="bg-white p-3 rounded border shadow-sm small">
+                    <div class="text-center border-bottom pb-2 mb-3">
+                        <span class="text-uppercase text-muted d-block font-monospace"
+                            style="font-size: 0.7rem;">Préstamo Asociado</span>
+                        <h6 class="fw-bold text-dark m-0">#{{ prestamoMoraSeleccionado?.id_prestamo }}</h6>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Fecha Límite:</span>
+                        <span class="fw-semibold text-dark">{{ prestamoMoraSeleccionado?.f_dev_esperada |
+                            date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Fecha Entrega:</span>
+                        <span class="fw-semibold text-dark">{{ prestamoMoraSeleccionado?.f_dev_real | date:'dd/MM/yyyy'
+                            }}</span>
+                    </div>
+                    <hr class="text-muted opacity-25">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Días de Retraso:</span>
+                        <span class="fw-bold text-dark">{{ datosMoraCalculados?.dias }} días</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Tarifa por Día:</span>
+                        <span class="fw-semibold text-dark">${{ datosMoraCalculados?.tarifaDiaria?.toFixed(2) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-3 mt-3 align-items-center">
+                        <span class="text-uppercase fw-bold text-secondary font-monospace"
+                            style="font-size: 0.75rem;">Total Multa:</span>
+                        <span class="fs-5 fw-extrabold text-danger">${{ datosMoraCalculados?.total?.toFixed(2) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top-0 pt-0">
+                <button type="button" class="btn btn-sm btn-secondary text-uppercase fw-bold w-100"
+                    data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>

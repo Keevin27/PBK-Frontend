@@ -15,4 +15,8 @@ export class DetalleprestamoService {
   registrarPrestamo(prestamo: DetallePrestamo): Observable<DetallePrestamo> {
       return this.http.post<DetallePrestamo>(`${this.apiUrl}/registrar`, prestamo);
     }
+
+  obtenerDetallesPorPrestamo(idPrestamo: number): Observable<DetallePrestamo[]> {
+    return this.http.get<DetallePrestamo[]>(`${this.apiUrl}/${idPrestamo}`);
+  }
 }
