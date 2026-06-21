@@ -1,34 +1,76 @@
-<div class="container mt-5">
-  <div class="card shadow">
-    <div class="card-header bg-primary text-white">
-      <h3><i class="bi bi-person-plus"></i> Registro de Nuevo Miembro</h3>
+<div class="container mt-5 mb-5" style="max-width: 800px;">
+  <div class="card shadow border-0 text-white" style="background-color: #1a1d24;">
+    <div class="card-header border-bottom border-secondary bg-transparent d-flex justify-content-between align-items-center py-3">
+      <h3><i class="bi bi-person-plus text-warning me-2"></i> Crear Cuenta</h3>
     </div>
     <div class="card-body">
       <form [formGroup]="miembroForm" (ngSubmit)="OnSubmit()">
         <div class="row">
+          
           <div class="col-md-6 mb-3">
             <label class="form-label">Nombre</label>
-            <input type="text" formControlName="nombre" class="form-control" placeholder="Ej. Juan">
+            <input type="text" formControlName="nombre" class="form-control" placeholder="Ej. Juan"
+                   [ngClass]="{'is-invalid': miembroForm.get('nombre')?.invalid && miembroForm.get('nombre')?.touched}">
           </div>
+          
           <div class="col-md-6 mb-3">
             <label class="form-label">Apellido</label>
-            <input type="text" formControlName="apellido" class="form-control" placeholder="Ej. Pérez">
+            <input type="text" formControlName="apellido" class="form-control" placeholder="Ej. Pérez"
+                   [ngClass]="{'is-invalid': miembroForm.get('apellido')?.invalid && miembroForm.get('apellido')?.touched}">
           </div>
 
           <div class="col-md-6 mb-3">
             <label class="form-label">Correo Electrónico</label>
-            <input type="email" formControlName="correo" class="form-control">
+            <input type="email" formControlName="correo" class="form-control" placeholder="correo@ejemplo.com"
+                   [ngClass]="{'is-invalid': miembroForm.get('correo')?.invalid && miembroForm.get('correo')?.touched}">
+            <div *ngIf="miembroForm.get('correo')?.hasError('email')" class="invalid-feedback">
+              Por favor ingresa un correo válido.
+            </div>
           </div>
+          
           <div class="col-md-6 mb-3">
             <label class="form-label">Teléfono</label>
-            <input type="tel" formControlName="telefono" class="form-control">
+            <input type="tel" formControlName="telefono" class="form-control" placeholder="Ej. 7777-7777"
+                   [ngClass]="{'is-invalid': miembroForm.get('telefono')?.invalid && miembroForm.get('telefono')?.touched}">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Contraseña</label>
+            <div class="input-group">
+              <input [type]="mostrarPass ? 'text' : 'password'" formControlName="password" class="form-control" placeholder="********"
+                     [ngClass]="{'is-invalid': miembroForm.get('password')?.invalid && miembroForm.get('password')?.touched}">
+              <button class="btn btn-outline-secondary border-secondary text-white" type="button" (click)="togglePass()">
+                <i class="bi" [ngClass]="mostrarPass ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div *ngIf="miembroForm.get('password')?.invalid && miembroForm.get('password')?.touched" class="text-danger mt-1" style="font-size: 0.8rem;">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> Mínimo 8 caracteres, una mayúscula, un número y un símbolo.
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Confirmar Contraseña</label>
+            <div class="input-group">
+              <input [type]="mostrarConfirmPass ? 'text' : 'password'" formControlName="confirmPassword" class="form-control" placeholder="********"
+                     [ngClass]="{'is-invalid': miembroForm.hasError('passwordMismatch') && miembroForm.get('confirmPassword')?.touched}">
+              <button class="btn btn-outline-secondary border-secondary text-white" type="button" (click)="toggleConfirmPass()">
+                <i class="bi" [ngClass]="mostrarConfirmPass ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div *ngIf="miembroForm.hasError('passwordMismatch') && miembroForm.get('confirmPassword')?.touched" class="text-danger fw-bold mt-1" style="font-size: 0.85rem;">
+              <i class="bi bi-x-circle-fill me-1"></i> ¡Las contraseñas no coinciden!
+            </div>
           </div>
 
         </div>
 
-        <button type="submit" class="btn btn-success w-100 mt-3" [disabled]="!miembroForm.valid">
-          Guardar Miembro
+        <button type="submit" class="btn btn-warning w-100 mt-3 fw-bold text-dark" [disabled]="!miembroForm.valid">
+          Registrarme
         </button>
+        
+        <div class="text-center mt-3">
+          <a routerLink="/login" class="text-secondary text-decoration-none small">¿Ya tienes una cuenta? Inicia sesión aquí</a>
+        </div>
       </form>
     </div>
   </div>

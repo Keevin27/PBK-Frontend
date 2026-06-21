@@ -15,7 +15,7 @@
         <a class="nav-link text-white text-start" routerLink="/lista-recursos" routerLinkActive="active" data-bs-dismiss="offcanvas">
           <i class="bi bi-journal-bookmark me-2"></i> Lista de Recursos
         </a>
-        <a class="nav-link text-white text-start" routerLink="/miembros" routerLinkActive="active" data-bs-dismiss="offcanvas">
+        <a  class="nav-link text-white text-start " role="group" *ngIf="authService.hasRole('administrador')" routerLink="/miembros" routerLinkActive="active" data-bs-dismiss="offcanvas">
           <i class="bi bi-people me-2"></i>Miembros
         </a>
       </div>
@@ -26,8 +26,8 @@
 
   <div class="flex-grow-1 d-flex flex-column">
 
-    <header class="navbar navbar-expand bg-white border-bottom px-3 px-md-4 py-3">
-      <button class="btn btn-outline-dark me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" title="Abrir menú">
+    <header class="navbar navbar-expand bg-dark text-white border-bottom px-3 px-md-4 py-3">
+      <button class="btn btn-warning me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" title="Abrir menú">
         <i class="bi bi-list fs-5"></i>
       </button>
       <div>
@@ -36,18 +36,47 @@
       </div>
       
       <div class="ms-auto d-flex align-items-center gap-3 flex-wrap">
-        <div class="d-flex align-items-center gap-2 border rounded-pill px-3 py-1">
-          <span class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold" style="width:28px;height:28px;font-size:.75rem;">AM</span>
-          <div class="small">
-            <div class="fw-semibold">Ana Martínez</div>
-            <div class="text-muted" style="font-size:.7rem;">Bibliotecaria</div>
-          </div>
+        <div *ngIf="isLoggedIn" class="dropdown">
+  <div class="d-flex align-items-center gap-2 border rounded-pill px-3 py-1 dropdown-toggle" 
+       role="button" 
+       data-bs-toggle="dropdown" 
+       aria-expanded="false" 
+       style="cursor: pointer;">
+    
+    <span class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold" 
+          style="width:28px;height:28px;font-size:.75rem;">
+      {{ iniciales }}
+    </span>
+    
+    <div class="small text-start">
+      <div class="fw-semibold">{{ nombreUsuario }}</div>
+      <div class="text-white text-capitalize" style="font-size:.7rem;">{{ rolUsuario }}</div>
+    </div>
+  </div>
+
+  <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 bg-dark">
+    <li>
+      <a class="dropdown-item text-danger d-flex align-items-center gap-2" 
+         (click)="cerrarSesion()" 
+         style="cursor: pointer;">
+        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+      </a>
+    </li>
+  </ul>
+</div>
+<div *ngIf="!isLoggedIn" class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-warning btn-sm" routerLink="/login">
+            Iniciar Sesión
+          </button>
+          <button class="btn btn-warning btn-sm text-dark fw-bold" routerLink="/miembros/registrar">
+            Registrarse
+          </button>
         </div>
         <div class="d-flex align-items-center gap-2 border rounded-pill px-3 py-1">
           <i class="bi bi-calendar3 text-warning"></i>
           <div class="small">
             <div class="fw-semibold">{{ fechaHoy }}</div>
-            <div class="text-muted" style="font-size:.7rem;">{{ horaHoy }}</div>
+            <div class="text-white" style="font-size:.7rem;">{{ horaHoy }}</div>
           </div>
         </div>
       </div>
