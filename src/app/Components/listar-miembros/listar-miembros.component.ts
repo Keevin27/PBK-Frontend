@@ -26,6 +26,15 @@ export class ListarMiembrosComponent implements OnInit {
   terminoBusqueda: string = '';
   criterioBusqueda: string = 'todos';
 
+  toastMensaje: string = '';
+  toastClass: string = ''; 
+  mostrarToast: boolean = false;
+
+  mostrarModal: boolean = false;
+  modalTitulo: string = '';
+  modalMensaje: string = '';
+  accionConfirmada: () => void = () => {};
+
   ngOnInit(): void {
     this.obtenerMiembros();
     this.obtenerRoles();
@@ -91,61 +100,80 @@ export class ListarMiembrosComponent implements OnInit {
         // Actualizamos visualmente el estado
         miembro.estado = miembroActualizado.estado;
 
-        Swal.fire({
-          toast: true, position: 'top-end', showConfirmButton: false, timer: 3000,
-          icon: 'success', title: 'Estado actualizado'
-        });
+        this.lanzarToast('Estado de miembro actualizado con éxito.', 'success');
 
         this.obtenerMiembros();
       },
-      error: (err) => Swal.fire('Error', 'No se pudo cambiar el estado', 'error')
+      error: (err) => this.lanzarToast('No se pudo cambiar el estado del miembro.', 'danger')
     });
   }
 
   renovarCarnet(id: number | undefined) {
     if (!id) return; // Validación de seguridad
 
-    Swal.fire({
-      title: '¿Renovar Carnet?',
-      text: "Se extenderá la vigencia por 1 año.",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#ffc107', // Color warning
-      cancelButtonColor: '#1a1d24',  // Color de tu tarjeta
-      confirmButtonText: 'Sí, renovar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-
-      if(confirm('¿Estás seguro de renovar el carnet por 1 año más?')) {
+    this.abrirModalConfirmacion(
+      '¿Renovar Carnet?',
+      '¿Estás seguro de que deseas renovar el carnet por 1 año más? Esta acción extenderá la vigencia de la membresía de forma inmediata.',
+      () => {
         this.miembroService.renovarCarnet(id).subscribe({
-          next: (res) => Swal.fire('¡Éxito!', res.mensaje, 'success'),
-          error: (err) => Swal.fire('Error', 'No se pudo renovar', 'error')
+          next: (res: any) => {
+            this.lanzarToast(res.mensaje, 'success');
+            this.obtenerMiembros();
+          },
+          error: (err) => this.lanzarToast('No se pudo renovar el carnet.', 'danger')
         });
       }
-    });
+    );
   }
 
   cambiarRol(id: number | undefined, nombreRol: string) {
     if (!id) return;
 
-    Swal.fire({
-      title: `¿Asignar rol de ${nombreRol}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#ffc107',
-      cancelButtonColor: '#1a1d24',
-      confirmButtonText: 'Sí, cambiar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.abrirModalConfirmacion(
+      'Asignación de Rol',
+      `¿Estás seguro de que deseas cambiar el rol de este usuario a "${nombreRol.toUpperCase()}"? Se modificarán sus privilegios en el sistema.`,
+      () => {
         this.miembroService.cambiarRol(id, nombreRol).subscribe({
-          next: (res) => {Swal.fire('¡Actualizado!', res.mensaje, 'success')
+          next: (res: any) => {
+            this.lanzarToast(res.mensaje, 'success');
             this.obtenerMiembros();
           },
-          error: (err) => Swal.fire('Error', 'No se pudo cambiar el rol', 'error')
+          error: (err) => this.lanzarToast('No se pudo cambiar el rol.', 'danger')
         });
       }
-    });
+    );
+  
+  
+  }
+
+  lanzarToast(mensaje: string, tipo: 'success' | 'danger' | 'warning' = 'success') {
+    this.toastMensaje = mensaje;
+    if (tipo === 'success') this.toastClass = 'bg-success text-white';
+    if (tipo === 'danger') this.toastClass = 'bg-danger text-white';
+    if (tipo === 'warning') this.toastClass = 'bg-warning text-dark';
+    
+    this.mostrarToast = true;
+
+    // Se oculta automáticamente después de 3.5 segundos
+    setTimeout(() => {
+      this.mostrarToast = false;
+    }, 3500);
+  }
+
+  abrirModalConfirmacion(titulo: string, mensaje: string, accion: () => void) {
+    this.modalTitulo = titulo;
+    this.modalMensaje = mensaje;
+    this.accionConfirmada = accion;
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
+  }
+
+  confirmarModal() {
+    this.accionConfirmada(); // Ejecuta la acción guardada (renovar o cambiar rol)
+    this.cerrarModal();
   }
   
 }
