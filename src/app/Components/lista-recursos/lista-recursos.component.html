@@ -25,13 +25,6 @@
                     <option>Todos los productos</option>
                 </select>
             </div>
-            <div>
-                <span class="me-2 text-uppercase fw-semibold">Ordenar por:</span>
-                <select
-                    class="form-select form-select-sm d-inline-block w-auto border-0 bg-transparent fw-bold text-dark">
-                    <option>Características</option>
-                </select>
-            </div>
         </div>
 
         <div class="d-flex align-items-center gap-4">
@@ -61,7 +54,9 @@
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4"
         *ngIf="recursosFiltrados.length > 0">
         <div class="col" *ngFor="let item of recursosFiltrados">
-            <div class="card h-100 border-0 text-center product-card position-relative">
+            <div class="card h-100 border-0 text-center product-card position-relative"
+            style="cursor: pointer; transition: transform 0.2s;"
+     (click)="abrirDetalle(item)">
 
                 <div class="image-container overflow-hidden bg-light mb-3 rounded"
                     style="height: 280px; display: flex; align-items: center; justify-content: center;">
@@ -84,7 +79,7 @@
                     <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
                         <span class="fw-bold text-dark"></span>
 
-                        <button class="btn btn-sm btn-outline-dark rounded-circle" (click)="agregarAlCarrito(item)"
+                        <button class="btn btn-sm btn-outline-dark rounded-circle" (click)="agregarAlCarrito(item); $event.stopPropagation()"
                             title="Agregar al carrito">
                             <i class="bi bi-bag-plus"></i>
                         </button>
@@ -177,8 +172,8 @@
                                     <span class="input-group-text bg-light text-muted fw-bold"
                                         style="font-size: 0.7rem;">CÓD. EJEMPLAR</span>
                                     <input type="text"
-                                        class="form-control form-control-sm text-uppercase fw-bold border-secondary-subtle"
-                                        placeholder="Ej: NE-001" [(ngModel)]="item.codigoEjemplarAsignado"
+                                        class="form-control form-control-sm fw-bold border-secondary-subtle"
+                                        placeholder="Ej: 001" [(ngModel)]="item.codigoEjemplarAsignado"
                                         [name]="'codigoEjemplar_' + i" required #codigoEjemplar="ngModel"
                                         [class.is-invalid]="codigoEjemplar.invalid && codigoEjemplar.touched">
                                 </div>
@@ -194,7 +189,7 @@
                     <div class="modal-footer px-0 pb-0 border-top mt-4">
                         <button type="button" class="btn btn-sm btn-secondary text-uppercase fw-bold px-3"
                             data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-sm btn-dark text-uppercase fw-bold px-4"
+                        <button type="submit" class="btn btn-sm btn-success text-uppercase fw-bold px-4"
                             [disabled]="prestamoForm.invalid || carritoPrestamo.length === 0 || tieneCodigosVacios()"
                             data-bs-dismiss="modal">
                             Confirmar Préstamo
@@ -220,6 +215,65 @@
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="removerToast(msg)"
                 aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetalleRecurso" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg" *ngIf="recursoSeleccionado">
+            
+            <div class="modal-header bg-dark text-white border-0">
+                <h5 class="modal-title text-uppercase fw-bold text-truncate style-title small" id="modalDetalleLabel" style="max-width: 80%;">
+                    {{ recursoSeleccionado.titulo }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body p-4 bg-white">
+                <div class="row g-3">
+                    <div class="col-12 text-center bg-light p-3 rounded mb-2" style="max-height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <img *ngIf="recursoSeleccionado.logo" [src]="'data:image/jpeg;base64,' + recursoSeleccionado.logo" 
+                             class="img-fluid" style="max-height: 180px; object-fit: contain;" alt="Portada" />
+                        <i *ngIf="!recursoSeleccionado.logo" class="bi bi-book text-muted display-4"></i>
+                    </div>
+
+                    <div class="col-12">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1" style="font-size: 0.7rem;">Autor</small>
+                        <p class="fw-semibold text-dark mb-0">{{ recursoSeleccionado.autor?.nombre || 'Autor Desconocido' }}</p>
+                    </div>
+
+                    <div class="col-6">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1" style="font-size: 0.7rem;">Idioma</small>
+                        <p class="text-dark mb-0">{{ recursoSeleccionado.idioma || 'No especificado' }}</p>
+                    </div>
+
+                    <div class="col-6">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1" style="font-size: 0.7rem;">Tipo de Recurso</small>
+                        <span class="badge text-uppercase font-monospace" 
+                              [ngClass]="recursoSeleccionado.es_referencia ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'">
+                            {{ recursoSeleccionado.es_referencia ? 'Solo Referencia (No Prestables)' : 'Material Prestable' }}
+                        </span>
+                    </div>
+
+                    <div class="col-12 border-top pt-2">
+                        <small class="text-uppercase fw-bold text-muted d-block mb-1" style="font-size: 0.7rem;">Descripción / Sinopsis</small>
+                        <p class="text-secondary small mb-0 text-justify" style="line-height: 1.5;">
+                            {{ recursoSeleccionado.descripcion || 'Este recurso no cuenta con una descripción disponible en el catálogo actualmente.' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top bg-light py-2">
+                <button type="button" class="btn btn-sm btn-secondary text-uppercase fw-bold" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-sm btn-dark text-uppercase fw-bold" 
+                        (click)="agregarAlCarrito(recursoSeleccionado)" 
+                        data-bs-dismiss="modal">
+                    <i class="bi bi-bag-plus me-1"></i> Agregar al carrito
+                </button>
+            </div>
+
         </div>
     </div>
 </div>

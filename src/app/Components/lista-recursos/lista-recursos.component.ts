@@ -30,6 +30,7 @@ export class ListaRecursosComponent implements OnInit {
   tarifaMoraPorDia: number = 1.50;
   carnetMiembro: string = '';
   terminoBusqueda: string = '';
+  recursoSeleccionado: Recurso | null = null;
 
   constructor(
     private recursoService: RecursoService, 
@@ -142,4 +143,16 @@ export class ListaRecursosComponent implements OnInit {
       return titulo.includes(busqueda) || descripcion.includes(busqueda) || autor.includes(busqueda);
     });
   }
+  abrirDetalle(recurso: Recurso): void {
+  this.recursoSeleccionado = recurso;
+  
+  setTimeout(() => {
+    const modalElement = document.getElementById('modalDetalleRecurso');
+    if (modalElement) {
+      // Usamos la API de Bootstrap global cargada en el navegador
+      const bootstrapModal = new (window as any).bootstrap.Modal(modalElement);
+      bootstrapModal.show();
+    }
+  }, 50);
+}
 }

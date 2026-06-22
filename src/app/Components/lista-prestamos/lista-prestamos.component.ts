@@ -78,53 +78,33 @@ export class ListaPrestamosComponent implements OnInit {
   }
 
   marcarComoEntregado(prestamo: Prestamo): void {
-  const hoy = new Date();
-  const prestamoActualizado = { ...prestamo, f_dev_real: hoy };
-  const montoMoraTotal = this.calcularMontoMora(prestamoActualizado);
-
-  // 1. Primero actualizamos el préstamo con su fecha de devolución real
-  this.prestamoService.actualizarPrestamo(prestamo.id_prestamo!, prestamoActualizado).pipe(
-    switchMap(() => {
-      if (montoMoraTotal > 0) {
-        
-        // 2. ENVIAR SOLO UN REGISTRO: La Mora contiene implícitamente los campos de Transacción
-        const objetoMora: any = {
-          // Propiedades heredadas de Transaccion (Los IDs van nulos para que la BD los genere)
-          id_transaccion: null!,
-          fecha: hoy,
-          monto: montoMoraTotal,
-
-          // Propiedades específicas de Mora
-          id_mora: null!,
-          monto_aplicado: this.tarifaActual.monto_diario,
-
-          // Objetos relacionales referenciados estructuralmente por ID
-          tarifa: {
-            id_tarifa: this.tarifaActual.id_tarifa
-          },
-          prestamo: {
-            id_prestamo: prestamo.id_prestamo
-          }
-        };
-
-        return this.moraService.registrarMora(objetoMora);
+  // Solo pasamos el ID, delegando el peso del cálculo y las transacciones a MariaDB
+  this.prestamoService.actualizarPrestamo(prestamo.id_prestamo!).subscribe({
+    next: (respuesta: any) => {
+      
+      // Evaluamos el mensaje que formateó el procedimiento almacenado
+      if (respuesta.message && respuesta.message.startsWith('MORA:$')) {
+        const montoMora = respuesta.message.split('$')[1]; // Extrae el número
+        this.mostrarNotificacion(
+          `Devolución procesada con retraso. Multa generada de $${montoMora}`, 
+          'error'
+        );
       } else {
-        // Si no hay mora, terminamos con éxito sin penalizaciones
-        return of(null);
+        this.mostrarNotificacion(
+          `Préstamo #${prestamo.id_prestamo} devuelto a tiempo sin penalizaciones.`, 
+          'success'
+        );
       }
-    })
-  ).subscribe({
-    next: (resultado) => {
-      if (resultado) {
-        this.mostrarNotificacion(`Devolución procesada con retraso. Multa generada de $${montoMoraTotal.toFixed(2)}`, 'error');
-      } else {
-        this.mostrarNotificacion(`Préstamo #${prestamo.id_prestamo} devuelto a tiempo sin penalizaciones.`, 'success');
-      }
-      this.obtenerPrestamos();
+      
+      this.obtenerPrestamos(); // Recarga la lista en tu tabla html
     },
     error: (err) => {
       console.error('Error en el flujo:', err);
-      this.mostrarNotificacion('Error al procesar el flujo de la entrega.', 'error');
+      let mensajeError = 'Error al procesar el flujo de la entrega.';
+      if (err.error && err.error.message) {
+        mensajeError = err.error.message;
+      }
+      this.mostrarNotificacion(mensajeError, 'error');
     }
   });
 }

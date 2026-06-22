@@ -20,8 +20,8 @@ export class PrestamoService {
     return this.http.get<Prestamo[]>(`${this.apiUrl}/prestamos`);
   }
   // Actualiza el préstamo (agrega la fecha real de entrega en la BD)
-  actualizarPrestamo(id: number, prestamo: Prestamo): Observable<Prestamo> {
-    return this.http.put<Prestamo>(`${this.apiUrl}/actualizar/${id}`, prestamo);
+  actualizarPrestamo(id: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/actualizar/${id}`, {});
   }
   verificarSiExisteCarnet(carnet: string): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/validar-carnet/${carnet}`);
