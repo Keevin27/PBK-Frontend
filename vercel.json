@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "outputDirectory": "dist/PBKFrontend/browser",
+  "outputDirectory": "dist/PBKFrontend",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
