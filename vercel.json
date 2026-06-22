@@ -2,6 +2,6 @@
   "version": 2,
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/lista-recursos" }
+    { "source": "/(.*)", "destination": "/lista-recursos.component.html" }
   ]
 }
