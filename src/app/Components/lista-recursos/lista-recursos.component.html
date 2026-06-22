@@ -33,7 +33,7 @@
                 artículos disponibles
             </div>
 
-            <div class="position-relative" *ngIf="authService.hasRole('miembro') || authService.hasRole('profesor')" style="cursor: pointer;" data-bs-toggle="modal"
+            <div class="position-relative" *ngIf="authService.hasRole('administrador') || authService.hasRole('bibliotecario')" style="cursor: pointer;" data-bs-toggle="modal"
                 data-bs-target="#modalPrestamo" title="Ver carrito de préstamos">
                 <i class="bi bi-cart3 fs-4 text-dark"></i>
                 <span *ngIf="carritoPrestamo.length > 0"
