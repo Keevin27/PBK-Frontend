@@ -35,7 +35,13 @@ export const routes: Routes = [
         path: 'miembros',
         loadComponent: () => import('./Components/listar-miembros/listar-miembros.component').then(m => m.ListarMiembrosComponent),
         canActivate: [authGuard,roleGuard],
-        data: { roles: ['administrador'] }
+        data: { roles: ['administrador','bibliotecario'] }
+      },
+      {
+        path: 'prestamos',
+        loadComponent: () => import('./Components/lista-prestamos/lista-prestamos.component').then(m => m.ListaPrestamosComponent),
+        canActivate: [authGuard,roleGuard],
+        data: { roles: ['administrador','bibliotecario'] }
       },
       
       // Redirección si entra a la raíz y SÍ está logueado
@@ -45,16 +51,8 @@ export const routes: Routes = [
         pathMatch: 'full' 
       },
       {
-        path: 'miembros',
-        loadComponent: () => import('./Components/listar-miembros/listar-miembros.component').then(m => m.ListarMiembrosComponent)
-      },
-      {
         path: 'miembros/registrar',
         loadComponent: () => import('./Components/registrar-miembro/registrar-miembro.component').then(m => m.RegistrarMiembroComponent)
-      },
-      {
-        path: 'prestamos',
-        loadComponent: () => import('./Components/lista-prestamos/lista-prestamos.component').then(m => m.ListaPrestamosComponent)
       }
 
     ]

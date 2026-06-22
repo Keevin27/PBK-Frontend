@@ -136,7 +136,7 @@
               <td class="text-center pe-3">
                 <div class="btn-group btn-group-sm" role="group">
                   
-                  <div class="btn-group btn-group-sm" role="group">
+                  <div class="btn-group btn-group-sm"  *ngIf="authService.hasRole('administrador')" role="group">
                     <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Cambiar Rol">
                       <i class="bi bi-shield-lock-fill"></i>
                     </button>

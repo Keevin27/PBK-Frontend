@@ -5,6 +5,7 @@ import { MiembroService } from '../../Services/miembro.service';
 import { Miembro } from '../../Models/miembro';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../Auth/auth.service';
 
 @Component({
   selector: 'app-listar-miembros',
@@ -14,7 +15,7 @@ import Swal from 'sweetalert2';
   styleUrl: './listar-miembros.component.css'
 })
 export class ListarMiembrosComponent implements OnInit {
-  constructor(private miembroService: MiembroService, private router:Router) { }
+  constructor(private miembroService: MiembroService, private router:Router,public authService: AuthService) { }
 
   //para guardar miembros
   miembros:any[];

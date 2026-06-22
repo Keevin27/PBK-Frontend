@@ -7,6 +7,7 @@ import { Recurso } from '../../Models/recurso';
 import { RecursoService } from '../../Services/recurso.service';
 import { PrestamoService } from '../../Services/prestamo.service';
 import { TarifaService } from '../../Services/tarifa.service';
+import { AuthService } from '../../Auth/auth.service';
 
 interface MensajeToast {
   id: number;
@@ -35,7 +36,8 @@ export class ListaRecursosComponent implements OnInit {
   constructor(
     private recursoService: RecursoService, 
     private prestamoService: PrestamoService, 
-    private tarifaService: TarifaService
+    private tarifaService: TarifaService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
