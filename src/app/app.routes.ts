@@ -32,6 +32,7 @@ export const routes: Routes = [
         loadComponent: () => import('./Components/lista-recursos/lista-recursos.component').then(m => m.ListaRecursosComponent)
       },
       {
+        
         path: 'miembros',
         loadComponent: () => import('./Components/listar-miembros/listar-miembros.component').then(m => m.ListarMiembrosComponent),
         canActivate: [authGuard,roleGuard],
