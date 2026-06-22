@@ -118,7 +118,9 @@
                                 </span>
                                 <input type="text" class="form-control border-start-0" placeholder="Ej: 12345"
                                     [(ngModel)]="carnetMiembro" name="carnetMiembro" required #carnet="ngModel"
-                                    [class.is-invalid]="carnet.invalid && carnet.touched">
+                                    [class.is-invalid]="carnet.invalid && carnet.touched"
+                                    inputmode="numeric"
+                                    (keypress)="soloNumeros($event)">
                             </div>
                             <div class="invalid-feedback" *ngIf="carnet.invalid && carnet.touched">
                                 El número de carnet es obligatorio.
@@ -175,7 +177,9 @@
                                         class="form-control form-control-sm fw-bold border-secondary-subtle"
                                         placeholder="Ej: 001" [(ngModel)]="item.codigoEjemplarAsignado"
                                         [name]="'codigoEjemplar_' + i" required #codigoEjemplar="ngModel"
-                                        [class.is-invalid]="codigoEjemplar.invalid && codigoEjemplar.touched">
+                                        [class.is-invalid]="codigoEjemplar.invalid && codigoEjemplar.touched"
+                                        inputmode="numeric"
+                                        (keypress)="soloNumeros($event)">
                                 </div>
                             </div>
 

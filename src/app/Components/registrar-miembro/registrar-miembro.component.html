@@ -30,8 +30,17 @@
           
           <div class="col-md-6 mb-3">
             <label class="form-label">Teléfono</label>
-            <input type="tel" formControlName="telefono" class="form-control" placeholder="Ej. 7777-7777"
-                   [ngClass]="{'is-invalid': miembroForm.get('telefono')?.invalid && miembroForm.get('telefono')?.touched}">
+            <input type="text" 
+                  formControlName="telefono" 
+                  class="form-control" 
+                  placeholder="Ej. 77778888"
+                  maxlength="8"
+                  (input)="filtrarNumeros($event)"
+                  [ngClass]="{'is-invalid': miembroForm.get('telefono')?.invalid && miembroForm.get('telefono')?.touched}">
+            
+            <div *ngIf="miembroForm.get('telefono')?.invalid && miembroForm.get('telefono')?.touched" class="invalid-feedback">
+              El teléfono debe contener exactamente 8 números.
+            </div>
           </div>
 
           <div class="col-md-6 mb-3">

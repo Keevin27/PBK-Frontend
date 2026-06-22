@@ -156,5 +156,8 @@ export class ListaRecursosComponent implements OnInit {
       bootstrapModal.show();
     }
   }, 50);
-}
+  }
+  soloNumeros(event: KeyboardEvent): boolean {
+    return /[0-9]/.test(event.key);
+  }
 }

@@ -39,13 +39,18 @@ export class RegistrarMiembroComponent {
         Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
       ]],
       confirmPassword: ['', Validators.required],
-      telefono: ['', Validators.required],
+      telefono: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
       f_registro: [new Date().toISOString().split('T')[0]],
       estado: [true],
       es_profesor: [false]
     },{ validators: passwordMatchValidator });
   }
 
+  filtrarNumeros(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const valorLimpio = input.value.replace(/[^0-9]/g, '');
+    this.miembroForm.get('telefono')?.setValue(valorLimpio, { emitEvent: false });
+  }
   // Funciones para alternar entre ver/ocultar contraseña
   togglePass() {
     this.mostrarPass = !this.mostrarPass;
