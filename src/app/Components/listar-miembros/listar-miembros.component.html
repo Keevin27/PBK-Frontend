@@ -1,3 +1,43 @@
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+  <div class="toast align-items-center border-0 show shadow-lg" [ngClass]="toastClass" role="alert" aria-live="assertive" aria-atomic="true" *ngIf="mostrarToast">
+    <div class="d-flex">
+      <div class="toast-body fw-bold d-flex align-items-center">
+        <i class="bi me-2 fs-5" [ngClass]="toastClass.includes('success') ? 'bi-check-circle-fill' : toastClass.includes('danger') ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
+        {{ toastMensaje }}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="mostrarToast = false" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" [ngClass]="{'show d-block': mostrarModal}" [ngStyle]="{'background-color': mostrarModal ? 'rgba(0,0,0,0.6)' : 'none'}" tabindex="-1" role="dialog" *ngIf="mostrarModal" style="z-index: 1100;">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border border-secondary shadow-lg text-white" style="background-color: #1a1d24;">
+      
+      <div class="modal-header border-bottom border-secondary py-3">
+        <h5 class="modal-title fw-bold d-flex align-items-center text-warning">
+          <i class="bi bi-exclamation-diamond-fill me-2"></i> {{ modalTitulo }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body py-4 text-light-subtle fs-6" style="line-height: 1.6;">
+        {{ modalMensaje }}
+      </div>
+      
+      <div class="modal-footer border-top border-secondary bg-transparent py-2">
+        <button type="button" class="btn text-white border-0 hover-opacity" style="background-color: #2c313c;" (click)="cerrarModal()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-warning fw-bold px-4 shadow-sm" (click)="confirmarModal()">
+          Confirmar Acción
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="container mt-4">
   <div class="card shadow border-0 text-white" style= "background-color: #1a1d24;">
     
