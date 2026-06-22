@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/PBKFrontend/browser",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/lista-recursos.component.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
