@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "outputDirectory": "dist/PBK-Frontend/browser",
+  "outputDirectory": "dist/pbk-frontend/browser",
   "rewrites": [
     { "source": "/(.*)", "destination": "/lista-recursos.component.html" }
   ]
