@@ -8,7 +8,7 @@ import { Prestamo } from '../Models/prestamo';
 })
 export class PrestamoService {
 
-  private apiUrl = 'http://localhost:8080/prestamos';
+  private apiUrl = 'https://pbk-backend.onrender.com/prestamos';
 
   constructor(private http: HttpClient) { }
 

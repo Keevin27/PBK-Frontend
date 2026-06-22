@@ -8,7 +8,7 @@ import { Mora } from '../Models/mora';
 })
 export class MoraService {
 
-  private apiUrl = 'http://localhost:8080/moras';
+  private apiUrl = 'https://pbk-backend.onrender.com/moras';
 
   constructor(private httpClient: HttpClient) { }
 

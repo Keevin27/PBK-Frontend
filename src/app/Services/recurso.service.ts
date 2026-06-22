@@ -8,7 +8,7 @@ import { Recurso } from '../Models/recurso';
 })
 export class RecursoService {
 
-  private apiUrl = 'http://localhost:8080/recursos';
+  private apiUrl = 'https://pbk-backend.onrender.com/recursos';
   
   constructor(private http: HttpClient) { }
 

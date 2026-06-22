@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class TransaccionService {
 
-  private apiUrl = 'http://localhost:8080/transacciones';
+  private apiUrl = 'https://pbk-backend.onrender.com/transacciones';
 
   constructor(private httpClient: HttpClient) { }
 

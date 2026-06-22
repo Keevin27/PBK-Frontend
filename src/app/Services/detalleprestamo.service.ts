@@ -8,7 +8,7 @@ import { DetallePrestamo } from '../Models/detalle-prestamo';
 })
 export class DetalleprestamoService {
 
-  private apiUrl = 'http://localhost:8080/detalles-prestamos';
+  private apiUrl = 'https://pbk-backend.onrender.com/detalles-prestamos';
 
   constructor(private http: HttpClient) { }
 

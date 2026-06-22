@@ -9,7 +9,7 @@ import { Miembro } from '../Models/miembro';
 export class MiembroService {
 
   //todos los miembros
-  private BaseURL = "http://localhost:8080/miembros";
+  private BaseURL = "https://pbk-backend.onrender.com/miembros";
 
   constructor(private httpClient: HttpClient) { }
 

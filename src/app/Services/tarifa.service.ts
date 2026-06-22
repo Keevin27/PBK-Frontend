@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class TarifaService {
 
-  private apiUrl = 'http://localhost:8080/tarifas';
+  private apiUrl = 'https://pbk-backend.onrender.com/tarifas';
   constructor(private httpClient: HttpClient) { }
 
   obtenerUltimaTarifa(): Observable<Tarifa> {

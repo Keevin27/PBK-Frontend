@@ -9,7 +9,7 @@ interface AuthResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private api = 'http://localhost:8080/auth';
+  private api = 'https://pbk-backend.onrender.com/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 
